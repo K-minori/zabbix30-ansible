@@ -20,9 +20,9 @@ CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストール
 
 * インターネット接続可能であること( yum/rpm実行するため )
 
-### playbook実行の前に(設定変更可能なポイント)
+### playbook実行の前に(設定変更必要なポイント)
 
-* インストール先のサーバのIP変更 
+* zabbixインストール先のサーバのIP変更 (zabbixサーバのIPに変更)
 
 	+ 変更ファイル: zabbix30/inventory/inventory.ini
 ```
