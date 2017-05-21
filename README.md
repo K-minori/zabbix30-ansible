@@ -22,11 +22,13 @@ CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストール
 * Mariadbのパスワード(id=zabbix)を変更したい場合(2箇所修正)
  
 	+ 変更対象(1): zabbix30/roles/application/files/zabbix.conf.php
+
 ```
 $DB['PASSWORD'] = 'password';    <--passwordを指定したいパスワードに変更
 ```
 
 	+ 変更対象(2): zabbix30/roles/application/vars/main.yml
+
 ```
 - zabbix_mariadb_password: password   <--passwordを指定したいパスワードに変更
 ```
