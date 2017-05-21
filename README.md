@@ -14,39 +14,35 @@ CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストール
 
 ### playbook実行の前に(実行要件)
 
-* ansible(実行可能な)サーバからzabbix導入するサーバへは、ssh(id=root)で接続可能であること
-* インターネット接続可能であること( zabbix-repo等取得します )
+* ansible(実行可能な)サーバと、zabbix(導入する)サーバの2台が必要
+
+* ansibleサーバからzabbixサーバへは、ssh(id=root)で接続可能であること
+
+* インターネット接続可能であること( yum/rpm実行するため )
 
 ### playbook実行の前に(設定変更可能なポイント)
 
-* Mariadbのパスワード(id=zabbix)を変更したい場合(2箇所修正(1/2))
- 
-	+ 変更対象(1): zabbix30/roles/application/files/zabbix.conf.php
+* インストール先のサーバのIP変更 
 
+	+ 変更ファイル: zabbix30/inventory/inventory.ini
 ```
-$DB['PASSWORD'] = 'password';    <--passwordを指定したいパスワードに変更
-```
-
-* Mariadbのパスワード(id=zabbix)を変更したい場合(2箇所修正(2/2))
-
-	+ 変更対象(2): zabbix30/roles/application/vars/main.yml
-
-```
-- zabbix_mariadb_password: password   <--passwordを指定したいパスワードに変更
-```
-
-* インストール先のサーバのIP変更をしたい場合 
-
-	+ 変更対象: zabbix30/inventory/inventory.ini
-```
-192.168.10.83 ansible_ssh_user=root <--192.168.10.83を指定したいパスワードに変更
+192.168.10.83 ansible_ssh_user=root  <--192.168.10.83をzabbixサーバIPに変更
 ```
 
 ### playbook実行
 
-zabbix3.0の自動インストールが開始されます。
+zabbix3.0の自動インストールが開始。
 
+ansibleサーバで実行
 ```
+git clone https://github.com/mishikawan/zabbix30-ansible.git
+cd zabbix30-ansible/
 ansible-playbook -i zabbix30/inventory/inventory.ini zabbix30/zabbix30_deploy.yml
 ```
 
+無事完了すると、zabbixサーバ上でzabbixサーバが稼働しています。以下、URLでアクセス可能。
+```
+http://{zabbix-ip}/zabbix
+  ID = admin
+  PASS = zabbix
+```
