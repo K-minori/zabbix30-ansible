@@ -1,0 +1,62 @@
+- name: create database zabbix
+  mysql_db:
+    name: zabbix
+    encoding: utf8
+    state: present
+
+- name: create and modify zabbix user
+  mysql_user:
+    name: zabbix
+    password: "{{ item.zabbix_mariadb_password }}"
+    priv: 'zabbix.*:ALL,GRANT'
+    state: present
+  with_items: "{{ zabbix_setup }}"
+
+- name: varliable zabbix user count
+  shell: mysql -u root -ss zabbix -e "select count(*) from users"
+  ignore_errors: yes
+  register: count_users
+
+- name: insert zabbix DB
+  shell: zcat /usr/share/doc/zabbix-server-mysql-3.0.9/create.sql.gz | mysql zabbix -u root
+  when: count_users.rc != 0
+
+- name: modify httpd config
+  lineinfile: >-
+    dest='/etc/httpd/conf.d/zabbix.conf'
+    state=present
+    backrefs=yes
+    regexp='php_value date.timezone'
+    line='        php_value date.timezone Asia/Tokyo' 
+  notify:
+    - restart httpd
+
+- name: enabled and start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: modify config
+  lineinfile: >-
+    dest='/etc/zabbix/zabbix_server.conf'
+    state=present
+    backrefs=yes
+    regexp='DBPassword=$'
+    line="DBPassword={{ item.zabbix_mariadb_password }}"
+  with_items: "{{ zabbix_setup }}"
+  notify:
+    - restart zabbix-server
+
+- copy:
+   src: zabbix.conf.php
+   dest: /etc/zabbix/web/zabbix.conf.php
+  notify:
+    - restart zabbix-server
+
+- name: enabled and start zabbix-server
+  service:
+    name: zabbix-server
+    state: started
+    enabled: yes
+

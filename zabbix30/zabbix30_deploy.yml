@@ -1,0 +1,7 @@
+- name: Install zabbix30 server
+  hosts: zabbix_servers
+  roles:
+   - os
+   - middleware
+   - application
+

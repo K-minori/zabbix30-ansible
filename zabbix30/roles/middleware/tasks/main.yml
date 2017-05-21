@@ -1,0 +1,55 @@
+- name: install httpd
+  yum:
+    name: httpd
+    state: installed
+
+- name: install mariadb
+  yum:
+    name: mariadb-server
+    state: installed
+
+- name: install zabbix-server-mysql
+  yum:
+    name: zabbix-server-mysql
+    state: installed
+
+- name: install zabbix-web-japanese
+  yum:
+    name: zabbix-web-japanese
+    state: installed
+
+- name: install zabbix-web
+  yum:
+    name: zabbix-web
+    state: installed
+
+- name: install zabbix-get
+  yum:
+    name: zabbix-get
+    state: installed
+
+- name: install zabbix-agent
+  yum:
+    name: zabbix-agent
+    state: installed
+
+- name: install zabbix-sender
+  yum:
+    name: zabbix-sender
+    state: installed
+
+- name: install MySQL-python ( need to operate ansible )
+  yum:
+    name: MySQL-python
+    state: installed
+
+- name: install php-mysql
+  yum:
+    name: php-mysql
+    state: installed
+
+- name: enabled and start mariadb
+  service:
+    name: mariadb
+    state: started
+    enabled: yes

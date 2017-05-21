@@ -1,0 +1,2 @@
+zabbix_setup:
+  - zabbix_mariadb_password: password
