@@ -43,6 +43,6 @@ ansible-playbook -i zabbix30/inventory/inventory.ini zabbix30/zabbix30_deploy.ym
 無事完了すると、zabbixサーバ上でzabbixサーバが稼働しています。以下、URLでアクセス可能。
 ```
 http://{zabbix-ip}/zabbix
-  ID = admin
+  ID = Admin
   PASS = zabbix
 ```
