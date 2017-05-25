@@ -32,6 +32,35 @@
   notify:
     - restart httpd
 
+- name: modify snmpttini config
+  lineinfile: 
+    dest='/etc/snmp/snmptt.ini'
+    state=present
+    backrefs=yes
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+  with_items:
+  - { regexp: 'date_time_format =', line: 'date_time_format = %Y/%m/%d %H:%M:%S' }
+  - { regexp: 'mode = standalone', line: 'mode = daemon' }
+  - { regexp: '^log_file = ', line: 'log_file = /var/log/snmptt/snmptt.log' }
+  - { regexp: 'net_snmp_perl_enable = 0', line: 'net_snmp_perl_enable = 1'}
+  - { regexp: 'translate_log_trap_oid = 0', line: 'translate_log_trap_oid = 1' }
+  notify:
+    - restart snmptt
+
+- name: modify zabbix_server config
+  lineinfile: 
+    dest='/etc/zabbix/zabbix_server.conf'
+    state=present
+    backrefs=yes
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+  with_items:
+  - { regexp: 'SNMPTrapperFile=', line: 'SNMPTrapperFile=/var/log/snmptt/snmptt.log' }
+  - { regexp: 'StartSNMPTrapper=', line: 'StartSNMPTrapper=1' }
+  notify:
+    - restart zabbix-server
+
 - name: enabled and start httpd
   service:
     name: httpd
@@ -58,9 +87,32 @@
     mode=0644
   with_items: "{{ zabbix_setup }}"
 
+- name: template snmptrapd.conf.php
+  template: >
+    src=snmptrapd.conf.j2
+    dest=/etc/snmp/snmptrapd.conf
+    owner=root
+    group=root
+    mode=0644
+  with_items: "{{ zabbix_setup }}"
+  notify:
+    - restart snmptrapd
+
 - name: enabled and start zabbix-server
   service:
     name: zabbix-server
+    state: started
+    enabled: yes
+
+- name: enabled and start snmptt
+  service:
+    name: snmptt
+    state: started
+    enabled: yes
+
+- name: enabled and start snmptrapd
+  service:
+    name: snmptrapd
     state: started
     enabled: yes
 

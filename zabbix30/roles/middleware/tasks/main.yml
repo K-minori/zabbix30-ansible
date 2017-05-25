@@ -48,6 +48,31 @@
     name: php-mysql
     state: installed
 
+- name: install snmptrapd
+  yum:
+    name: net-snmp
+    state: installed
+
+- name: install epel-release
+  yum:
+    name: epel-release
+    state: installed
+
+- name: install snmptt
+  yum:
+    name: snmptt
+    state: installed
+
+- name: install perl-Sys-Syslog
+  yum:
+    name: perl-Sys-Syslog
+    state: installed
+
+- name: install net-snmp-perl
+  yum:
+    name: net-snmp-perl
+    state: installed
+
 - name: enabled and start mariadb
   service:
     name: mariadb

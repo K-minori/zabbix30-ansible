@@ -13,3 +13,9 @@
     permanent: true
     immediate: yes
     state: enabled
+
+- firewalld:
+    service: snmptrap
+    permanent: true
+    immediate: yes
+    state: enabled

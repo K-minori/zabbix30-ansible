@@ -1,2 +1,3 @@
 zabbix_setup:
-  - zabbix_mariadb_password: password
+  - zabbix_mariadb_password: "password"
+    snmptrap_community: "public"
