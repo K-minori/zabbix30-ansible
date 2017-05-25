@@ -16,6 +16,7 @@
   shell: mysql -u root -ss zabbix -e "select count(*) from users"
   ignore_errors: yes
   register: count_users
+- debug: var=count_users
 
 - name: insert zabbix DB
   shell: zcat /usr/share/doc/zabbix-server-mysql-3.0.9/create.sql.gz | mysql zabbix -u root
@@ -48,11 +49,14 @@
   notify:
     - restart zabbix-server
 
-- copy:
-   src: zabbix.conf.php
-   dest: /etc/zabbix/web/zabbix.conf.php
-  notify:
-    - restart zabbix-server
+- name: template zabbix.conf.php
+  template: >
+    src=zabbix.conf.php.j2
+    dest=/etc/zabbix/web/zabbix.conf.php
+    owner=root
+    group=root
+    mode=0644
+  with_items: "{{ zabbix_setup }}"
 
 - name: enabled and start zabbix-server
   service:
