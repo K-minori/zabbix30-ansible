@@ -2,6 +2,8 @@
 
 CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストールするAnsibleのplaybookです。
 
+* 2017/05/25: snmptrapd/snmpttを自動インストール対象に追加
+
 ## システム構成
 
 * CentOS 7.3
@@ -11,6 +13,8 @@ CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストール
 
 * Zabbix3.0
 	+ 管理者ID/PASS = Admin / zabbix  (zabbixの初期状態のまま)
+* SNMPTRAP
+	+ community_name = public
 
 ### playbook実行の前に(実行要件)
 
@@ -26,7 +30,21 @@ CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストール
 
 	+ 変更ファイル: zabbix30/inventory/inventory.ini
 ```
-192.168.10.83 ansible_ssh_user=root  <--192.168.10.83をzabbixサーバIPに変更
+192.168.10.84 ansible_ssh_user=root  <--192.168.10.84をzabbixサーバIPに変更
+```
+
+* snmptrapdのcommunity name変更
+
+	+ 変更ファイル: cat zabbix30/roles/application/vars/main.yml
+```
+snmptrap_community: "public"  <--publicを必要に応じて変更
+```
+
+* DB(zabbix)のログインパスワード変更(ID=zabbix)
+
+	+ 変更ファイル: cat zabbix30/roles/application/vars/main.yml
+```
+- zabbix_mariadb_password: "password"  <--passwordを必要に応じて変更
 ```
 
 ### playbook実行
