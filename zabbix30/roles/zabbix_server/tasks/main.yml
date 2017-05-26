@@ -1,3 +1,48 @@
+- firewalld:
+    service: http
+    permanent: true
+    immediate: yes
+    state: enabled
+
+- firewalld:
+    service: snmptrap
+    permanent: true
+    immediate: yes
+    state: enabled
+
+- firewalld:
+    port: 10051/tcp
+    permanent: true
+    immediate: yes
+    state: enabled
+
+- name: yum install
+  yum:
+    name={{ item }}
+    state=installed
+  with_items:
+    - httpd
+    - mariadb-server
+    - MySQL-python
+    - zabbix-server-mysql
+    - zabbix-web
+    - zabbix-web-japanese
+    - zabbix-get
+    - zabbix-agent
+    - zabbix-sender
+    - php-mysql
+    - net-snmp
+    - epel-release
+    - snmptt
+    - perl-Sys-Syslog
+    - net-snmp-perl
+
+- name: enabled and start mariadb
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
 - name: create database zabbix
   mysql_db:
     name: zabbix
@@ -12,7 +57,7 @@
     state: present
   with_items: "{{ zabbix_setup }}"
 
-- name: varliable zabbix user count
+- name: check to exist  zabbix table. ignore status is OK.
   shell: mysql -u root -ss zabbix -e "select count(*) from users"
   ignore_errors: yes
   register: count_users

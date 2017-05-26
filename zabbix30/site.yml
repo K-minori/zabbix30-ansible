@@ -1,1 +1,2 @@
-- include: zabbix30_deploy.yml
+- include: zabbix_server.yml
+- include: zabbix_agent.yml
