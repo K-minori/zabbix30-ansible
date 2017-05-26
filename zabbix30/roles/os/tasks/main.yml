@@ -8,6 +8,33 @@
     name: https://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-release-3.0-1.el7.noarch.rpm
     state: present
 
+- name: check timezone
+  shell: timedatectl | egrep Asia/Tokyo
+  ignore_errors: yes
+  register: check_timezone
+- debug: var=check_timezone
+
+- name: timedatectl 
+  command: timedatectl set-timezone "{{ item.timezone }}"
+  with_items: "{{ common }}"
+  when: check_timezone.rc != 0
+
+- name: yum install chrony
+  yum:
+    name: chrony
+    state: installed
+
+- name: modify /etc/chrony.conf
+  template: >
+    src=chrony.conf.j2
+    dest=/etc/chrony.conf
+    owner=root
+    group=root
+    mode=0644
+  with_items: "{{ common }}"
+  notify:
+    - restart chronyd
+
 - firewalld:
     service: http
     permanent: true

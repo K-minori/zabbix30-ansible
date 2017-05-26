@@ -5,13 +5,13 @@
   with_items:
     - httpd
     - mariadb-server
+    - MySQL-python
     - zabbix-server-mysql
     - zabbix-web
     - zabbix-web-japanese
     - zabbix-get
     - zabbix-agent
     - zabbix-sender
-    - MySQL-python
     - php-mysql
     - net-snmp
     - epel-release

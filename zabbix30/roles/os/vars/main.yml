@@ -1,0 +1,5 @@
+common:
+  - timezone: "Asia/Tokyo"
+    timeservers:
+      - "192.168.10.1"
+      - "192.168.10.2"
