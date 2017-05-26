@@ -87,6 +87,16 @@
     mode=0644
   with_items: "{{ zabbix_setup }}"
 
+- name: modify snmptrap config
+  lineinfile: >-
+    dest='/etc/sysconfig/snmptrapd'
+    state=present
+    backrefs=yes
+    regexp='OPTIONS'
+    line="OPTIONS=\"-m +ALL -Lsd -On\""
+  notify:
+    - restart snmptrapd
+
 - name: template snmptrapd.conf.php
   template: >
     src=snmptrapd.conf.j2
