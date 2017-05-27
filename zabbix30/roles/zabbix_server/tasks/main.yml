@@ -16,7 +16,7 @@
     immediate: yes
     state: enabled
 
-- name: yum install
+- name: yum install phase1
   yum:
     name={{ item }}
     state=installed
@@ -33,6 +33,12 @@
     - php-mysql
     - net-snmp
     - epel-release
+
+- name: yum install phase2
+  yum:
+    name={{ item }}
+    state=installed
+  with_items:
     - snmptt
     - perl-Sys-Syslog
     - net-snmp-perl

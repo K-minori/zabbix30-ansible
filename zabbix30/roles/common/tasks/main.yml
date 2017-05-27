@@ -1,7 +1,8 @@
-- name: disabled selinux
+- include: tasks/check.yml
+
+- name: disable selinux
   selinux:
    state: disabled
-  when: ansible_selinux['status'] == 'enabled' and ansible_selinux['config_mode'] != 'disabled'
 
 - name: check timezone.  Ignore status is OK.
   shell: timedatectl | egrep Asia/Tokyo
