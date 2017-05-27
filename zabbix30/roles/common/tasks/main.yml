@@ -5,15 +5,17 @@
    state: disabled
 
 - name: check timezone.  Ignore status is OK.
-  shell: timedatectl | egrep Asia/Tokyo
+  shell: timedatectl | egrep "{{ item.timezone }}"
   ignore_errors: yes
   register: check_timezone
+  with_items: "{{ common }}"
+
 - debug: var=check_timezone
 
 - name: timedatectl 
   command: timedatectl set-timezone "{{ item.timezone }}"
   with_items: "{{ common }}"
-  when: check_timezone.rc != 0
+  when: check_timezone.results[0].rc != 0
 
 - name: yum install chrony
   yum:
