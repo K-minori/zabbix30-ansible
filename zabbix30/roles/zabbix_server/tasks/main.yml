@@ -30,6 +30,12 @@
     - zabbix-get
     - zabbix-agent
     - zabbix-sender
+
+- name: yum install phase2
+  yum:
+    name={{ item }}
+    state=installed
+  with_items:
     - php-mysql
     - net-snmp
     - epel-release
