@@ -1,55 +1,59 @@
-## 概要 
+## 概要
 
-CentOS7環境に、Zabbix3.0(zabbix-repo提供のRPM)を自動インストールするAnsibleのplaybookです。
+Ansible用playbookです。
+CentOS7環境に、Zabbix-server(rpm)とZabbix-agent(rpm)の機能を自動設定する。
 
-* 2017/05/25: snmptrapd/snmpttを自動インストール対象に追加
 
-## システム構成
+## 対象となる環境
 
-* CentOS 7.3
-* Mariadb
-	+ 管理者ID/PASS = root / なし
-	+ Zabbix用ID/PASS = zabbix / password 
+* CentOS7 ( RHEL7 )
+* インターネットにつながり、ansibleサーバからrootユーザで直接sshできること
 
-* Zabbix3.0
-	+ 管理者ID/PASS = Admin / zabbix  (zabbixの初期状態のまま)
-* SNMPTRAP
-	+ community_name = public
+## 自動設定内容
 
-### playbook実行の前に(実行要件)
+* os(共通(common))
+	+ selinux無効化
+	+ timezoneの設定(zone情報指定可能)
+	+ chrony(時刻同期先IP指定可能)
+	+ zabbix-repoの登録
 
-* ansible(実行可能な)サーバと、zabbix(導入する)サーバの2台が必要
+* zabbix-server
+	+ zabbix3.0(zabbix official repo)
+	+ mariadb( DB名"zabbix"のユーザ"zabbix"のパスワード指定可能)
+	+ httpd
+	+ snmptrapd( snmptrapの受付コミュニティ名指定可能)
+	+ snmptt(epel repo)
 
-* ansibleサーバからzabbixサーバへは、ssh(id=root)で接続可能であること
+* zabbix-agent
+	+ zabbix-agent3.0( zabbix-serverのIP指定可能)
 
-* インターネット接続可能であること( yum/rpm実行するため )
+# 指定可能なインストール先
 
-### playbook実行の前に(設定変更必要なポイント)
+* zabbix30/inventory/inventory.ini
 
-* zabbixインストール先のサーバのIP変更 (zabbixサーバのIPに変更)
-
-	+ 変更ファイル: zabbix30/inventory/inventory.ini
 ```
-192.168.10.84 ansible_ssh_user=root  <--192.168.10.84をzabbixサーバIPに変更
-```
-
-* snmptrapdのcommunity name変更
-
-	+ 変更ファイル: cat zabbix30/roles/application/vars/main.yml
-```
-snmptrap_community: "public"  <--publicを必要に応じて変更
+[zabbix_servers] ... zabbix server
+[zabbix_agents] ... zabbix-agent client
 ```
 
-* DB(zabbix)のログインパスワード変更(ID=zabbix)
+# 指定可能な設定内容
 
-	+ 変更ファイル: cat zabbix30/roles/application/vars/main.yml
+* zabbix30/roles/common/vars/main.yml
+
 ```
-- zabbix_mariadb_password: "password"  <--passwordを必要に応じて変更
+common:
+- timezone: "Asia/Tokyo"  ... Timezone指定
+    timeservers:
+      - "192.168.10.1" ... TimeServer #1
+      - "192.168.10.2" ... TimeServer #2
+      ...............  ... TimeServer #..
+zabbix_setup:
+  - zabbix_mariadb_password: "password" ... MariaDB, zabbix's password
+    snmptrap_community: "public"     ... snmptrapd 's community name
+    zabbix_server_ip: "192.168.10.84" ... Zabbix server's IP
 ```
 
 ### playbook実行
-
-zabbix3.0の自動インストールが開始。
 
 ansibleサーバで実行
 ```
