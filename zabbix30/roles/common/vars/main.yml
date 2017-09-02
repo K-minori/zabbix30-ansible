@@ -6,4 +6,4 @@ common:
 zabbix_setup:
   - zabbix_mariadb_password: "password"
     snmptrap_community: "public"
-    zabbix_server_ip: "192.168.10.84"
+    zabbix_server_ip: "192.168.10.86"

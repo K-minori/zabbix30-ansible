@@ -50,7 +50,7 @@ common:
 zabbix_setup:
   - zabbix_mariadb_password: "password" ... MariaDB, zabbix's password
     snmptrap_community: "public"     ... snmptrapd 's community name
-    zabbix_server_ip: "192.168.10.84" ... Zabbix server's IP
+    zabbix_server_ip: "192.168.10.86" ... Zabbix server's IP
 ```
 
 ### playbook実行
@@ -59,7 +59,7 @@ ansibleサーバで実行
 ```
 git clone https://github.com/mishikawan/zabbix30-ansible.git
 cd zabbix30-ansible/
-ansible-playbook -i zabbix30/inventory/inventory.ini zabbix30/zabbix30_deploy.yml
+ansible-playbook -i zabbix30/inventory/inventory.ini zabbix30/site.yml
 ```
 
 無事完了すると、zabbixサーバ上でzabbixサーバが稼働しています。以下、URLでアクセス可能。
