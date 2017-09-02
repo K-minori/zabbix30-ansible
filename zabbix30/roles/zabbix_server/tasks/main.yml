@@ -30,12 +30,6 @@
     - zabbix-get
     - zabbix-agent
     - zabbix-sender
-
-- name: yum install phase2
-  yum:
-    name={{ item }}
-    state=installed
-  with_items:
     - php-mysql
     - net-snmp
     - epel-release
@@ -76,7 +70,7 @@
 - debug: var=count_users
 
 - name: insert zabbix DB
-  shell: zcat /usr/share/doc/zabbix-server-mysql-3.0.9/create.sql.gz | mysql zabbix -u root
+  shell: zcat /usr/share/doc/zabbix-server-mysql-3.0.*/create.sql.gz | mysql zabbix -u root
   when: count_users.rc != 0
 
 - name: modify httpd config
